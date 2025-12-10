@@ -1,7 +1,7 @@
 import { cart, removeFromCart, updateDeliveryOption } from "../../data/cart.js";
-import { products } from "../../data/products.js";
+import { products, getProduct } from "../../data/products.js";
 import dayjs from "https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js";
-import { deliveryOptions } from "../../data/deliveryOptions.js";
+import { deliveryOptions, getDeliveryOption } from "../../data/deliveryOptions.js";
 
 
 export function renderOrderSummary() {
@@ -11,27 +11,11 @@ cart.forEach(cartItem => {
     const productId = cartItem.productId
     const quantity = cartItem.quantity
 
-
-    let matchingProduct
-
-    products.forEach((product) => {
-        if (product.id === productId) {
-            matchingProduct = product
-            return
-        }
-    })
+    const matchingProduct = getProduct(productId)
 
     const deliveryOptionId = cartItem.deliveryOptionId
 
-    let deliveryOption
-
-    deliveryOptions.forEach((option) => {
-        if (option.id === deliveryOptionId) {
-            deliveryOption = option
-            return
-        }
-    })
-
+    let deliveryOption = getDeliveryOption(deliveryOptionId)
 
     const deliveryDate = dayjs().add(deliveryOption.deliveryDays, 'days').format('dddd, MMMM D')
 
@@ -49,7 +33,7 @@ cart.forEach(cartItem => {
                     ${matchingProduct.name}
                 </div>
                 <div class="product-price">
-                    $${(matchingProduct.priceCents / 100).toFixed(2)}
+                    $${(Math.round(matchingProduct.priceCents) / 100).toFixed(2)}
                 </div>
                 <div class="product-quantity">
                     <span>
