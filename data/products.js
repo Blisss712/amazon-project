@@ -33,6 +33,27 @@ class Product {
   getPrice() {
     return `$${(Math.round(this.priceCents / 100)).toFixed(2)}`
   }
+
+  extraInfoHTML() {
+    return ""
+  }
+}
+
+class Clothing extends Product {
+  type;
+  sizeChartLink;
+
+  constructor(productDetails) {
+    super(productDetails)
+    this.type = productDetails.type
+    this.sizeChartLink = productDetails.sizeChartLink
+  }
+
+  extraInfoHTML() {
+    return `
+    <a href="${this.sizeChartLink}" target="_blank">Size Chart</a>
+    `
+  }
 }
 
 const product1 = new Product({
@@ -712,6 +733,12 @@ export const products = [
       "mens"
     ]
   }
-].map(productDetails => new Product(productDetails));
+].map(productDetails => {
+  if (productDetails.type === "clothing") {
+    return new Clothing(productDetails)
+  }
+
+  return new Product(productDetails)
+});
 
 console.log(products) 
